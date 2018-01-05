@@ -1,0 +1,110 @@
+﻿@model IEnumerable<DropBoxApplication.Models.ProductMasterModel>
+
+<div class="clearfix"></div>
+<div class="table-responsive tables">
+    <div class="ContenedorTabla">
+        <table id="pruebatabla" class="table table-striped table-bordered">
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="10">No Record's found.</td>
+                </tr>
+            }
+            else
+            {
+                <thead>
+                    <tr>
+                        <th id='column-header-1'>Image</th>
+                        <th id='column-header-2'>Id</th>
+                        <th id='column-header-3'>Product Name</th>
+                        <th id='column-header-4'>Category Name</th>
+                        <th id='column-header-5'>Unit Price</th>
+                        <th id='column-header-6'>GST</th>
+                        <th id='column-header-7'>Discount</th>
+                        <th id='column-header-8'>UOM</th>
+                        <th id='column-header-9'>ProductDetails</th>
+                        <td id='column-header-10'>Lock</td>
+                        <th id='column-header-11'>Edit</th>
+                        <th id='column-header-12'>Remove</th>
+                    </tr>
+                </thead>
+                foreach (var item in Model)
+                {
+                    <tbody class="searchable">
+                        <tr>
+                            <td><img src="@item.ProductPicturesUrl" width="40" height="35" /></td>
+                            <td>@item.ProductId</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.CategoryName</td>
+                            <td>@item.UnitPrice</td>
+                            <td>@item.GST</td>
+                            <td>@item.Discount</td>
+                            <td>@item.UOM</td>
+                            @*<td>@item.HSN</td>
+                                <td>@item.SweetsReset</td>*@
+                            <td>@item.ProductDetails</td>
+                            <td>
+                                @if (item.Lock)
+                                {
+                                    <label class="switch">
+                                        <input type="checkbox" name="ProductStatus"  id="ProductStatus" value="@item.ProductId" onclick="boxDisable($(this)); funCheck($(this));">
+                                        <span class="slider round"></span>
+                                    </label>
+                                }
+                                else
+                                {
+                                    <label class="switch">
+                                        <input type="checkbox" name="ProductStatus" checked id="ProductStatus" value="@item.ProductId" onclick="boxDisable($(this)); funCheck($(this));">
+                                        <span class="slider round"></span>
+                                    </label>
+                                }
+                            </td>
+                            @*<td>@item.Lock</td>*@
+                            <td><a href="@Url.Action("GetProductById", "ProductMaster",new { @id= @item.ProductId})" class="btn btn-success btn-sm">Edit</a></td>
+                            <td><a href="@Url.Action("RemoveProduct", "ProductMaster",new { @id= @item.ProductId})" class="btn btn-primary btn-sm">Remove</a></td>
+                        </tr>
+                    </tbody>
+                }
+            }
+        </table>
+    </div>
+</div>
+<script>
+    function boxDisable(t) {
+        var id = (t.val());
+        var qry = {
+            ProductId: id,
+        };
+
+        if (t.is(':checked')) {
+            $.ajax({
+                url: "/ProductMaster/ProductLockOff?strProductId=" + id + "",
+                type: "GET",
+                //data: qry,
+                contentType: "application/json;charset=utf-8",
+                dataType: "JSON",
+                success: function (result) {
+
+                },
+                error: function (errormessage) {
+                    //alert(errormessage.responseText);
+                }
+            });
+        }
+        else {
+            $.ajax({
+                url: "/ProductMaster/ProductLockOn?strProductId=" + id + "",
+                type: "GET",
+                //data: qry,
+                contentType: "application/json;charset=utf-8",
+                dataType: "JSON",
+                success: function (result) {
+
+                },
+                error: function (errormessage) {
+                    //alert(errormessage.responseText);
+                }
+            });
+        }
+    };
+</script>

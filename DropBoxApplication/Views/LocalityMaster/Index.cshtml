@@ -1,0 +1,119 @@
+﻿@model DropBoxApplication.Models.LocalityMasterModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@using (Html.BeginForm("AddNewLocalityName", "LocalityMaster", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Locality Master</div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div class="row">
+                    <div class="col-lg-3">
+                        @Html.HiddenFor(model => model.LocalityId, new { id = "LocalityId" })
+                        @Html.TextBoxFor(model => model.LocalityName, new { id = "LocalityName", @class = "form-group form-control", placeholder = "Locality Name" })
+                        @Html.ValidationMessageFor(model => model.LocalityName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(m => m.StoreName, (IEnumerable<SelectListItem>)ViewBag.StoreList, new { id = "StoreName1", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(m => m.StoreName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(m => m.StoreName1, (IEnumerable<SelectListItem>)ViewBag.StoreList, new { id = "StoreName1", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(m => m.StoreName1, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(m => m.StoreName2, (IEnumerable<SelectListItem>)ViewBag.StoreList, new { id = "StoreName2", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(m => m.StoreName2, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group form-control btn btn-default image-preview-input">
+                            <input type="file" id="file" name="file" />
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="submit" value="Add" class="form-group form-control btn btn-default" />
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="reset" value="Reset" class="form-group form-control btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Localities Records</div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div id="partial-load"></div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <style type="text/css">
+        table#pruebatabla th,
+        table#pruebatabla td {
+            white-space: nowrap;
+            padding: 3px 6px;
+            word-wrap: break-word;
+            overflow: hidden;
+            /*overflow-x: auto;*/
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            //$('#MenuName').change(function () {
+            //    debugger
+            //    var strMenuName = $('#MenuName option:selected').val();
+            //    var qry = {
+            //        MenuName: strMenuName,
+            //    };
+            //var $ddFeName = $('#FieldExective');
+            //$ddFeName.empty(); // Clear all Items
+            //$ddFeName.append($("<option></option>").val('').html('Please Wait...'));
+            $.ajax({
+                type: 'GET',
+                url: '/LocalityMaster/GetAllLocalitiesdata',
+                dataType: 'json',
+                //data: qry,
+                traditional: true,
+                async: true,
+                success: function (Results) {
+                    if (Results != null) {
+                        $('#partial-load').empty().append(Results);
+                        //statesProgress.hide();
+                    }
+                },
+                error: function (Results) {
+                    if (Results != null) {
+                        $(this).button('loading').delay(1000).queue(function () {
+                            $('#partial-load').empty().append(Results.responseText);
+                            //statesProgress.hide();
+                            $('#btnExport').show(); $('#filter').show();
+                            $(this).button('complete');
+                            $(this).dequeue();
+                        });
+
+                    }
+                }
+            });
+        });
+        //});
+    </script>
+}
+
+
+
+
+
+
+
+

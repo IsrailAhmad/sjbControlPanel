@@ -1,0 +1,161 @@
+﻿@model DropBoxApplication.Models.StoreMasterModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("AddNewStore", "StoreMaster", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">Store Master</div>
+        <div class="panel-body">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-lg-3">
+                        @Html.HiddenFor(model => model.StoreId, new { id = "StoreId" })
+                        @Html.DropDownListFor(model => model.LocalityName, (IEnumerable<SelectListItem>)ViewBag.LocalityList, new { id = "LocalityName", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(model => model.LocalityName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.StoreName, new { id = "StoreName", @class = "form-group form-control", placeholder = "Store Name" })
+                        @Html.ValidationMessageFor(model => model.StoreName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.StorePhoneNumber, new { id = "PhoneNumber", @class = "form-group form-control", placeholder = "Phone Number" })
+                        @Html.ValidationMessageFor(model => model.StorePhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.StoreEmailId, new { id = "StoreEmailId", @class = "form-group form-control", placeholder = "Email Id" })
+                        @Html.ValidationMessageFor(model => model.StoreEmailId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.StoreAddress, new { id = "Address", @class = "form-group form-control", placeholder = "Address" })
+                        @Html.ValidationMessageFor(model => model.StoreAddress, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.OpeningTime, new { id = "OpeningTime", @class = "form-group form-control", placeholder = "OpeningTime" })
+                        @Html.ValidationMessageFor(model => model.OpeningTime, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.ClosingTime, new { id = "ClosingTime", @class = "form-group form-control", placeholder = "ClosingTime" })
+                        @Html.ValidationMessageFor(model => model.ClosingTime, "", new { @class = "text-danger" })
+                    </div>
+                    @*<div class="col-lg-2">*@
+                    @*@Html.CheckBoxFor(model => model.StoreStatus, new { InputType = "checkbox", id = "StoreStatus", @class = "form-group form-control switch" , value = "true", @(Model.StoreStatus ? "checked=\"checked\"" : "")})
+                        @Html.ValidationMessageFor(model => model.StoreStatus)*@
+
+                    @*@Html.TextBoxFor(model => model.StoreStatus, new { id = "StoreStatus", @class = "form-group form-control datepicker", placeholder = "StoreStatus" })*@
+                    @*<label class="switch">
+                            <input type="checkbox" id="StoreStatus" value="false" />
+                            <span class="slider round"></span>
+                        </label>*@
+                    @*@Html.CheckBoxFor(model => model.StoreStatus, new { InputType = "checkbox", name = "StoreStatus", id = "StoreStatus", @class = "form-group form-control switch" })
+                        @Html.ValidationMessageFor(model => model.StoreStatus)*@
+                    @*</div>*@
+                    <div class="col-lg-3">
+                        <div class="btn btn-default image-preview-input form-group form-control">
+                            <input type="file" id="file" name="file" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-10">
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="submit" value="Add" class="form-group form-control btn btn-default" />
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="reset" value="Reset" class="form-group form-control btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Stores Records</div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div id="partial-load"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <link href="~/Content/boostrapSwitch.css" rel="stylesheet" />
+    <link href="~/Content/jquery.timepicker.css" rel="stylesheet" />
+    <link href="~/Content/jquery.timepicker.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.timepicker.min.js"></script>
+    <script type="text/javascript">
+        $('#OpeningTime').timepicker({ 'timeFormat': 'h:i A' });
+        $('#ClosingTime').timepicker({ 'timeFormat': 'h:i A' });
+        //$('#OpeningTime').datepicker({
+        //    format: "yyyy-mm-dd hh-m-ss",
+        //    "setDate": new Date(),
+        //    autoclose: true, todayHighlight: true, Default: true
+        //}).datepicker("setDate", "0");
+        //$('#ClosingTime').datepicker({
+        //    format: "yyyy-mm-dd hh-m-ss",
+        //    autoclose: true
+        //}).datepicker("setDate", "0");
+    </script>
+
+    <style type="text/css">
+        table#pruebatabla th,
+        table#pruebatabla td {
+            white-space: nowrap;
+            padding: 3px 6px;
+            word-wrap: break-word;
+            overflow: hidden;
+            /*overflow-x: auto;*/
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            //$('#MenuName').change(function () {
+            //    debugger
+            //    var strMenuName = $('#MenuName option:selected').val();
+            //    var qry = {
+            //        MenuName: strMenuName,
+            //    };
+            //var $ddFeName = $('#FieldExective');
+            //$ddFeName.empty(); // Clear all Items
+            //$ddFeName.append($("<option></option>").val('').html('Please Wait...'));
+            $.ajax({
+                type: 'GET',
+                url: '/StoreMaster/GetAllStoresList',
+                dataType: 'json',
+                //data: qry,
+                traditional: true,
+                async: true,
+                success: function (Results) {
+                    if (Results != null) {
+                        $('#partial-load').empty().append(Results);
+                        //statesProgress.hide();
+                    }
+                },
+                error: function (Results) {
+                    if (Results != null) {
+                        $(this).button('loading').delay(1000).queue(function () {
+                            $('#partial-load').empty().append(Results.responseText);
+                            //statesProgress.hide();
+                            $('#btnExport').show(); $('#filter').show();
+                            $(this).button('complete');
+                            $(this).dequeue();
+                        });
+
+                    }
+                }
+            });
+        });
+        //});
+    </script>
+}
+
+
+
+

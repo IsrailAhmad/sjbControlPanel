@@ -1,0 +1,80 @@
+﻿@model IEnumerable<DropBoxApplication.Models.CustomerOrderModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">All Orders</div>
+    <div class="panel-body">
+        <div class="col-sm-12 ">
+            <div class="breadcrumb"><input id="filter" type="text" class="form-control input-sm pull-right" placeholder="Type here..." style="display:none"><br /></div>
+            <div id="partial-load"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {    
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+        $(document).ready(function () {          
+            $.ajax({
+                type: 'GET',
+                url: '/ViewOrder/GetAllOrdersList',
+                dataType: 'json',
+                //data: qry,
+                traditional: true,
+                async: true,
+                success: function (Results) {
+                    if (Results != null) {
+                        $('#partial-load').empty().append(Results);
+                        //statesProgress.hide();
+                    }
+                },
+                error: function (Results) {
+                    if (Results != null) {
+                        $(this).button('loading').delay(1000).queue(function () {
+                            $('#partial-load').empty().append(Results.responseText);
+                            //statesProgress.hide();
+                            $('#btnExport').show(); $('#filter').show();
+                            $(this).button('complete');
+                            $(this).dequeue();
+                        });
+
+                    }
+                }
+            });
+        });
+</script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#pruebatabla").CongelarFilaColumna();
+            //soloThead: false
+        });
+    </script>
+    <style type="text/css">
+        table#pruebatabla th,
+        table#pruebatabla td {
+            white-space: nowrap;
+            padding: 3px 6px;
+            word-wrap: break-word;
+            overflow: hidden;
+            /*overflow-x: auto;*/
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            (function ($) {
+                $('#filter').keyup(function () {
+                    var rex = new RegExp($(this).val(), 'i');
+                    $('.searchable tr').hide();
+                    $('.searchable tr').filter(function () {
+                        return rex.test($(this).text());
+                    }).show();
+                })
+            }(jQuery));
+        });
+    </script>
+
+}

@@ -1,0 +1,303 @@
+﻿@model DropBoxApplication.Models.ProductMasterModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@using (Html.BeginForm("AddNewProduct", "ProductMaster", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div class="row">
+                    @Html.HiddenFor(model => model.ProductId, new { id = "ProductId" })
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(model => model.CategoryName, (IEnumerable<SelectListItem>)ViewBag.CategoryList, new { id = "CategoryName", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.ProductName, new { id = "ProductName", @class = "form-group form-control", placeholder = "ProductName" })
+                        @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.UnitPrice, new { id = "UnitPrice", @class = "form-group form-control", placeholder = "UnitPrice" })
+                        @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.GST, new { id = "GST", @class = "form-group form-control", placeholder = "GST" })
+                        @Html.ValidationMessageFor(model => model.GST, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.Discount, new { id = "Discount", @class = "form-group form-control", placeholder = "Discount" })
+                        @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.UOM, new { id = "UOM", @class = "form-group form-control", placeholder = "UOM" })
+                        @Html.ValidationMessageFor(model => model.UOM, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.ProductDetails, new { id = "ProductDetails", @class = "form-group form-control", placeholder = "ProductDetails" })
+                        @Html.ValidationMessageFor(model => model.ProductDetails, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.TextBoxFor(model => model.DeliveryCharge, new { id = "DeliveryCharge", @class = "form-group form-control", placeholder = "Delivery Charge" })
+                        @Html.ValidationMessageFor(model => model.DeliveryCharge, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-1">
+                        <label for="TaxType" class="control-label">
+                            Including Tax
+                        </label>
+                    </div>
+                    <div class="col-lg-1">
+                        @Html.RadioButtonFor(model => model.TaxType, "I", new { id = "TaxType", @class = "form-group form-control" })
+                    </div>
+                    <div class="col-lg-1">
+                        <label for="TaxType" class="control-label">
+                            Exclusive Tax
+                        </label>
+                    </div>
+                    <div class="col-lg-1">
+                        @Html.RadioButtonFor(model => model.TaxType, "X", new { id = "TaxType", @class = "form-group form-control" })
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="Lock" class="control-label">
+                            Product Lock
+                        </label>
+                        @Html.CheckBoxFor(model => model.Lock, new { InputType = "checkbox", name = "Lock", id = "Lock", @class = "form-group form-control switch" })
+                        @Html.ValidationMessageFor(model => model.Lock, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="btn btn-default image-preview-input form-group form-control">
+                            <input type="file" id="file" name="file" />
+                        </div>
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="submit" value="Add" id="btnAdd" class="form-group form-control btn btn-default" onclick="refreshdata()" />
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="reset" value="Reset" id="btnReset" class="form-group form-control btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a role="button" data-toggle="collapse" href="#partial-load" aria-expanded="true" aria-controls="partial-load">
+                    <i class="more-less glyphicon glyphicon-plus"></i>
+                    Products In Stock
+                </a>
+            </h1>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div id="partial-load"></div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a role="button" data-toggle="collapse" href="#partial-loadProduct" aria-expanded="true" aria-controls="partial-loadProduct">
+                    <i class="more-less glyphicon glyphicon-plus"></i>
+                    Products OutOf Stock
+                </a>
+            </h1>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div id="partial-loadProduct"></div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <link href="~/Content/boostrapSwitch.css" rel="stylesheet" />
+    <style>
+        .panel-heading {
+            padding: 0px 15px;
+        }
+
+        .panel-group .panel {
+            border-radius: 0;
+            box-shadow: none;
+            border-color: #EEEEEE;
+        }
+
+        .panel-default > .panel-heading {
+            padding: 0;
+            border-radius: 0;
+            color: #212121;
+            background-color: #FAFAFA;
+            border-color: #EEEEEE;
+        }
+
+        .panel-title {
+            font-size: 14px;
+        }
+
+            .panel-title > a {
+                display: block;
+                padding: 15px;
+                text-decoration: none;
+            }
+
+        .more-less {
+            float: right;
+            color: white;
+        }
+
+        .panel-default > .panel-heading + .panel-collapse > .panel-body {
+            border-top-color: #EEEEEE;
+        }
+    </style>
+    <script>
+        function refreshdata() {
+            ProductInStockList();
+            ProductOutOfStockList();
+        }
+        function toggleIcon(e) {
+            $(e.target)
+                .prev('.panel-heading')
+                .find(".more-less")
+                .toggleClass('glyphicon-plus glyphicon-minus');
+        }
+        $('.panel panel-primary').on('hidden.bs.collapse', toggleIcon);
+        $('.panel panel-primary').on('shown.bs.collapse', toggleIcon);
+    </script>
+    <script>
+        $(document).ready(function () {
+            ProductInStockList();
+            ProductOutOfStockList();
+        });
+
+        function funCheck(t) {
+            if (t.is(':checked')) {
+                ProductInStockList();
+                ProductOutOfStockList();
+            }
+            else {
+                ProductInStockList();
+                ProductOutOfStockList();
+            }
+        }
+
+
+        var ProductInStockList = function () {
+            $.ajax({
+                type: 'GET',
+                url: '/ProductMaster/GetAllProductList',
+                dataType: 'json',
+                //data: qry,
+                traditional: true,
+                async: true,
+                success: function (Results) {
+                    if (Results != null) {
+                        $('#partial-load').empty().append(Results);
+                    }
+                },
+                error: function (Results) {
+                    if (Results != null) {
+                        $(this).button('loading').delay(1000).queue(function () {
+                            $('#partial-load').empty().append(Results.responseText);
+                            $('#btnExport').show(); $('#filter').show();
+                            $(this).button('complete');
+                            $(this).dequeue();
+                        });
+
+                    }
+                }
+            });
+        }
+        var ProductOutOfStockList = function () {
+
+            $.ajax({
+                type: 'GET',
+                url: '/ProductMaster/GetAllOutOfStockProductList',
+                dataType: 'json',
+                //data: qry,
+                traditional: true,
+                async: true,
+                success: function (Results) {
+                    if (Results != null) {
+                        $('#partial-loadProduct').empty().append(Results);
+                    }
+                },
+                error: function (Results) {
+                    if (Results != null) {
+                        $(this).button('loading').delay(1000).queue(function () {
+                            $('#partial-loadProduct').empty().append(Results.responseText);
+                            $('#btnExport').show(); $('#filter').show();
+                            $(this).button('complete');
+                            $(this).dequeue();
+                        });
+
+                    }
+                }
+            });
+        }
+
+    </script>
+
+
+
+    @*<script>
+            function boxDisableOut(t) {
+                var id = (t.val());
+                var qry = {
+                    ProductId: id,
+                };
+
+                if (t.is(':checked')) {
+                    $.ajax({
+                        url: "/ProductMaster/ProductLockOff?strProductId=" + id + "",
+                        type: "GET",
+                        //data: qry,
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "JSON",
+                        success: function (result) {
+                        },
+                        error: function (errormessage) {
+                            //alert(errormessage.responseText);
+                        }
+                    });
+                }
+                else {
+                    $.ajax({
+                        url: "/ProductMaster/ProductLockOn?strProductId=" + id + "",
+                        type: "GET",
+                        //data: qry,
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "JSON",
+                        success: function (result) {
+
+                        },
+                        error: function (errormessage) {
+                            //alert(errormessage.responseText);
+                        }
+                    });
+                }
+            };
+        </script>*@
+    <style type="text/css">
+        table#pruebatabla th,
+        table#pruebatabla td {
+            white-space: nowrap;
+            padding: 3px 6px;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+    </style>
+
+}
+
+
+
+

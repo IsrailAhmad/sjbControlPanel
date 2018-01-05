@@ -1,0 +1,124 @@
+﻿@model DropBoxApplication.Models.UserLoginViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+<br />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="col-md-7 ">
+            <div class="jumbotron">
+                <img src="~/fonts/logo120x120edit.png" alt="logo" class="img-rounded">
+                <h2>Microsys Technologies India</h2>
+                <small> <cite title="Source Title" class="pull-left">Microsys Technologies India</cite></small>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="col-md-5 ">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Login
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm("Userlogin", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <div class="form-group">
+                            <label for="inputStorel3" class="col-sm-3 control-label">
+                                Store
+                            </label>
+                            <div class="col-sm-9">
+                                @Html.DropDownListFor(m => m.StoreName, (IEnumerable<SelectListItem>)ViewBag.StoreList, new { id = "StoreName", @class = "form-control" })
+                                @*@Html.ValidationMessageFor(m => m.StoreName, "", new { @class = "text-danger" })*@
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-3 control-label">
+                                Name
+                            </label>
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-3 control-label">
+                                Password
+                            </label>
+                            <div class="col-sm-9">
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <input class="btn btn-success btn-sm" type="submit" value="Log in" />
+                                <input class="btn btn-default btn-sm" type="reset" value="Reset">
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="panel-footer">
+                    @if (@ViewBag.Message != null)
+                    {
+                        <div class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Alert!</strong> @ViewBag.Message.
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <style>
+        .panel-footer {
+            padding-top: 5px;
+            height: 60px;
+            padding-bottom: 5px;
+        }
+
+        h2 {
+            margin-top: -15px;
+        }
+    </style>
+
+    <script>
+        //$(document).load(function () {
+        //    alert('hi');
+        //    load();
+        //});
+        //var load = function () {
+        //    $.ajax({
+        //        type: 'GET',
+        //        url: '/Home/GetStoreList',
+        //        dataType: 'json',
+        //        data: qry,
+        //        traditional: true,
+        //        async: true,
+        //        success: function (Results) {
+        //            if (Results != null) {
+        //               // $('#partial-load').empty().append(Results); statesProgress.hide();
+        //            }
+        //        },
+        //        error: function (Results) {
+        //            if (Results != null) {
+        //                //$(this).button('loading').delay(1000).queue(function () {
+        //                //    $('#partial-load').empty().append(Results.responseText);
+        //                //    statesProgress.hide();
+        //                //    $('#btnExport').show(); $('#filter').show();
+        //                //    $(this).button('complete');
+        //                //    $(this).dequeue();
+        //                //});
+
+        //            }
+        //        }
+        //    });
+        //}
+    </script>
+}

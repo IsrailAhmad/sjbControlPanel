@@ -1,0 +1,126 @@
+﻿@model DropBoxApplication.Models.MenuSetupMasterModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+@using (Html.BeginForm("SetupMenu", "MenuSetupMaster", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Activity</div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div class="row">
+                    @*<div class="col-lg-3">
+                            @Html.DropDownListFor(m => m.LocalityName, (IEnumerable<SelectListItem>)ViewBag.LocalityList, new { id = "LocalityName", @class = "form-group form-control" })
+                            @Html.ValidationMessageFor(m => m.LocalityName)
+                        </div>*@
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(m => m.MenuName, (IEnumerable<SelectListItem>)ViewBag.MenuList, new { id = "MenuName", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(m => m.MenuName)
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(m => m.CategoryName, (IEnumerable<SelectListItem>)ViewBag.CategoryList, new { id = "CategoryName", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(m => m.CategoryName)
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(m => m.ProductName, (IEnumerable<SelectListItem>)ViewBag.ProductList, new { id = "ProductName", @class = "form-group form-control" })
+                        @Html.ValidationMessageFor(m => m.ProductName)
+                    </div>
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="button" value="Add" id="btnAdd" class="btn btn-default" />
+                    </div>
+                    <div class="col-lg-1">
+                        <input type="button" value="Reset" id="btnReset" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Activity</div>
+        <div class="panel-body">
+            <div class="col-sm-12 ">
+                <div id="partial-load"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $('#btnAdd').click(function () {
+            debugger
+
+            var strMenuName = $('#MenuName option:selected').val();
+            var strCategoryName = $('#CategoryName option:selected').val();
+            var strProductName = $('#ProductName option:selected').val();
+            //if (strFranchiseeName == "Select FranchiseeName" || strFranchiseeName == undefined) {
+            //    debugger
+            //    alert('Please select Franchisee Name');
+            //}
+            //else if (strFeName == "" || strFeName == null) {
+            //    alert('Please select your FE Name ');
+            //}
+            //else if (strClientName == "" || strClientName == null || strClientName == "Select Client") {
+            //    alert('Please select  Client');
+            //}
+            //else if (strCaseType == "" || strCaseType == null || strCaseType == "Select Location") {
+            //    alert('Please select  Location');
+            //}
+            //else if (strDropBoxType == "" || strDropBoxType == null || strDropBoxType == "Select DropBox") {
+            //    alert('Please select  DropBox');
+            //}
+            //else if (strTransactionDateFrom == "" || strTransactionDateFrom == null) {
+            //    alert('Please select Transaction Date From ');
+            //}
+            //else if (strTransactionDateTo == "" || strTransactionDateTo == null) {
+            //    alert('Please select Transaction Date From');
+            //}
+            //else {
+            var qry = {
+                MenuName: strMenuName,
+                CategoryName: strCategoryName,
+                ProductName: strProductName
+            };
+            var btn = $(this)
+            btn.button('loading')
+            setTimeout(function () {
+                btn.button('reset')
+            }, 5000)
+            // var statesProgress = $("#states-loading-progress");
+            //statesProgress.show(); $('#btnExport').show(); $('#filter').show();
+            $.ajax({
+                type: 'Post',
+                url: '/MenuSetupMaster/SetupMenu',
+                dataType: 'json',
+                data: qry,
+                traditional: true,
+                async: true,
+                success: function (Results) {
+                    if (Results != null) {
+                        $('#partial-load').empty().append(Results); statesProgress.hide();
+                    }
+                },
+                error: function (Results) {
+                    if (Results != null) {
+                        $(this).button('loading').delay(1000).queue(function () {
+                            $('#partial-load').empty().append(Results.responseText);
+                            statesProgress.hide();
+                            $('#btnExport').show(); $('#filter').show();
+                            $(this).button('complete');
+                            $(this).dequeue();
+                        });
+
+                    }
+                }
+            });
+            //}
+        });
+    </script>
+}
+
